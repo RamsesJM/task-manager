@@ -1,114 +1,205 @@
 # TaskFlow
 
-TaskFlow is a full-stack task management application built with Laravel. It allows users to create, organize, update, complete, and delete their own tasks through a simple web interface.
+A full-stack task management application built with Laravel, Blade, Tailwind CSS, JavaScript, SQLite, and Laravel Sanctum.
 
-The project was built as a practical full-stack application rather than just a CRUD demonstration. It includes authentication, user-specific data, authorization, filtering, task priorities, due dates, and a REST API.
+TaskFlow was created as a portfolio project to demonstrate practical skills in authentication, CRUD operations, authorization, database design, REST APIs, responsive UI, and Laravel application architecture.
 
 ## Features
 
 - User registration and authentication
-- User-specific task management
+- User-specific tasks
 - Create, edit, and delete tasks
-- Mark tasks as completed or reopen them
-- Task priorities: Low, Medium, and High
+- Mark tasks as completed or pending
+- Task priorities: Low, Medium, High
 - Optional due dates
 - Search tasks by title or description
-- Filter tasks by status and priority
-- Authorization to prevent users from modifying other users' tasks
-- REST API protected with Laravel Sanctum
+- Filter by status
+- Filter by priority
+- Responsive dashboard
 - Profile management
-- Form validation
-- SQLite database
-- Automated authentication and profile tests
+- Authorization with Laravel Policies
+- REST API with Laravel Sanctum
+- SQLite database for simple local development
+- Tailwind CSS interface
+- Vite asset compilation
 
-## Why These Technologies?
+## Tech Stack
 
-### Laravel
+- **Backend:** Laravel / PHP
+- **Frontend:** Blade, Tailwind CSS, JavaScript
+- **Database:** SQLite
+- **Authentication:** Laravel Breeze
+- **API Authentication:** Laravel Sanctum
+- **Build Tool:** Vite
+- **Package Management:** Composer / npm
 
-I chose Laravel because it provides a solid structure for building a full-stack PHP application without having to implement common backend functionality from scratch.
+## Requirements
 
-Laravel provides routing, controllers, validation, authentication, database migrations, ORM functionality, middleware, authorization, and testing support in the same framework.
+Before running the project, make sure you have installed:
 
-For this project, that made it possible to focus on the application's functionality and architecture instead of manually building basic infrastructure.
+- PHP 8.2+
+- Composer
+- Node.js and npm
+- Git
 
-### PHP
+You can verify your installations with:
 
-PHP was used because Laravel is built around it and it remains widely used for server-side web applications.
+```bash
+php -v
+composer -V
+node -v
+npm -v
+git --version
+```
 
-Using PHP also allowed me to work with Laravel's ecosystem and understand how a modern PHP application is structured beyond simple PHP scripts.
+## Run TaskFlow Locally
 
-### Blade
+### 1. Clone the repository
 
-I chose Blade instead of introducing a separate frontend framework because TaskFlow does not require a highly interactive single-page application.
+```bash
+git clone https://github.com/RamsesJM/task-manager.git
+```
 
-Blade works directly with Laravel and makes it straightforward to render server-side views while still allowing JavaScript to be used where needed.
+Enter the project directory:
 
-This keeps the application simpler and avoids adding frontend complexity that would not provide much value for this project.
+```bash
+cd task-manager
+```
 
-### Tailwind CSS
+### 2. Install PHP dependencies
 
-Tailwind CSS was chosen to build the interface without maintaining a large collection of custom CSS classes and stylesheets.
+```bash
+composer install
+```
 
-It also makes it easier to keep spacing, typography, responsive layouts, and component styling consistent throughout the application.
+### 3. Install frontend dependencies
 
-For a project like TaskFlow, Tailwind provides enough flexibility to create a clean interface while keeping the styling close to the markup.
+```bash
+npm install
+```
 
-### SQLite
+### 4. Create the environment file
 
-SQLite was selected as the database because TaskFlow is a small self-contained application and does not require a separate database server during development.
+Windows:
 
-It is easy to configure, requires very little setup, and works well for local development and portfolio projects.
+```powershell
+copy .env.example .env
+```
 
-The application uses Laravel migrations, so moving to a database such as MySQL or PostgreSQL would not require redesigning the application's database structure.
+macOS/Linux:
 
-### Laravel Breeze
+```bash
+cp .env.example .env
+```
 
-Laravel Breeze was used for authentication because authentication is important to TaskFlow but is not the main feature being developed.
+### 5. Generate the application key
 
-Instead of building login, registration, password reset, email verification, and related authentication flows from scratch, Breeze provides a lightweight starting point that integrates naturally with Laravel.
+```bash
+php artisan key:generate
+```
 
-This also keeps the authentication implementation close to Laravel's standard conventions.
+### 6. Create the SQLite database
 
-### Laravel Sanctum
+Windows PowerShell:
 
-Sanctum was chosen to provide authentication for the REST API.
+```powershell
+New-Item database/database.sqlite -ItemType File
+```
 
-The API uses personal access tokens to authenticate requests, while the web application continues to use Laravel's normal session-based authentication.
+macOS/Linux:
 
-This allows TaskFlow to expose its task functionality to other clients without replacing the authentication system used by the web application.
+```bash
+touch database/database.sqlite
+```
 
-### Vite
+Make sure the `.env` database configuration uses SQLite:
 
-Vite is used as the frontend build tool because it integrates well with Laravel and provides fast development builds and asset bundling.
+```env
+DB_CONNECTION=sqlite
+```
 
-It handles the application's CSS and JavaScript assets and works directly with the Laravel development workflow.
+### 7. Run the database migrations
+
+```bash
+php artisan migrate
+```
+
+This creates the required tables for users, tasks, sessions, cache, jobs, and API tokens.
+
+### 8. Build the frontend assets
+
+```bash
+npm run build
+```
+
+### 9. Start the Laravel development server
+
+```bash
+php artisan serve
+```
+
+Open the application in your browser:
+
+```text
+http://127.0.0.1:8000
+```
+
+## Testing the Application
+
+After opening TaskFlow, create an account using the registration page.
+
+Then test the main functionality:
+
+1. Register a new account.
+2. Log in.
+3. Create a task.
+4. Set its priority.
+5. Add an optional due date.
+6. Mark the task as completed.
+7. Reopen the task.
+8. Edit the task.
+9. Search for the task.
+10. Filter tasks by status and priority.
+11. Delete the task.
+12. Open the profile section.
 
 ## Security and Authorization
 
-TaskFlow separates each user's data using Laravel relationships and authorization.
+TaskFlow uses Laravel authentication and authorization features.
 
-Tasks are associated with the authenticated user through a `user_id` foreign key.
+Each task belongs to a specific user. Users can only access and modify their own tasks.
 
-Web requests use the authenticated user's task relationship when retrieving and creating tasks. This prevents a user from simply requesting another user's task list.
+Task authorization is handled through Laravel Policies rather than relying only on frontend restrictions.
 
-Task authorization is handled through a Laravel Policy. Users can only update or delete tasks that belong to them.
+The application also includes protected API endpoints using Laravel Sanctum.
 
-The API applies the same ownership rule before allowing a task to be viewed, updated, or deleted.
+## API
 
-Sensitive environment variables such as database configuration and application keys are stored in `.env`, which is excluded from Git through `.gitignore`.
+TaskFlow includes a REST API.
 
-## Application Structure
+Available API functionality includes:
 
-The project follows Laravel's standard application structure.
+- User login
+- Authenticated user information
+- Logout
+- Task CRUD operations
+
+Protected API endpoints require a valid Sanctum authentication token.
+
+The API routes are located in:
+
+```text
+routes/api.php
+```
+
+## Project Structure
+
+Important parts of the project include:
 
 ```text
 app/
 ├── Http/
 │   └── Controllers/
-│       ├── Api/
-│       │   ├── AuthController.php
-│       │   └── TaskController.php
-│       └── TaskController.php
 ├── Models/
 │   ├── Task.php
 │   └── User.php
@@ -116,182 +207,29 @@ app/
     └── TaskPolicy.php
 
 database/
-└── migrations/
+├── migrations/
+└── database.sqlite
 
 resources/
 ├── css/
 ├── js/
 └── views/
-    ├── dashboard.blade.php
-    ├── layouts/
-    └── tasks/
 
 routes/
 ├── api.php
-├── auth.php
-└── web.php
-
-tests/
-├── Feature/
-└── Unit/
+├── web.php
+└── auth.php
 ```
-
-## API
-
-TaskFlow also provides a REST API.
-
-### Authentication
-
-```http
-POST /api/login
-```
-
-Returns a Sanctum personal access token when valid credentials are provided.
-
-### Current User
-
-```http
-GET /api/me
-```
-
-Requires authentication.
-
-### Tasks
-
-```http
-GET    /api/tasks
-POST   /api/tasks
-GET    /api/tasks/{task}
-PUT    /api/tasks/{task}
-PATCH  /api/tasks/{task}
-DELETE /api/tasks/{task}
-```
-
-Protected API endpoints require a valid Sanctum token.
-
-## Installation
-
-### Requirements
-
-- PHP 8.2+
-- Composer
-- Node.js and npm
-- Git
-
-### Clone the repository
-
-```bash
-git clone https://github.com/RamsesJM/task-manager.git
-cd task-manager
-```
-
-### Install PHP dependencies
-
-```bash
-composer install
-```
-
-### Install frontend dependencies
-
-```bash
-npm install
-```
-
-### Configure the environment
-
-Copy the example environment file:
-
-```bash
-cp .env.example .env
-```
-
-On Windows PowerShell:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-Generate the application key:
-
-```bash
-php artisan key:generate
-```
-
-### Database
-
-The project uses SQLite.
-
-Create the database file if it does not already exist:
-
-```powershell
-New-Item database/database.sqlite -ItemType File
-```
-
-Then run the migrations:
-
-```bash
-php artisan migrate
-```
-
-### Build frontend assets
-
-For development:
-
-```bash
-npm run dev
-```
-
-For a production build:
-
-```bash
-npm run build
-```
-
-### Start Laravel
-
-```bash
-php artisan serve
-```
-
-The application will normally be available at:
-
-```text
-http://127.0.0.1:8000
-```
-
-## Testing
-
-The project includes Laravel feature tests for authentication, registration, password management, email verification, and profile functionality.
-
-Run the test suite with:
-
-```bash
-php artisan test
-```
-
-## Development
-
-During development, Laravel's development script can be used to run the application and frontend tooling together:
-
-```bash
-composer run dev
-```
-
-This starts the Laravel development server, queue worker, and Vite development server.
 
 ## Database Design
 
-The main application entities are users and tasks.
+The main entities are:
 
-A user can have multiple tasks:
+### Users
 
-```text
-User
- └── hasMany Tasks
+Stores registered application users.
 
-Task
- └── belongsTo User
-```
+### Tasks
 
 Each task contains:
 
@@ -300,29 +238,49 @@ Each task contains:
 - Completion status
 - Priority
 - Due date
-- User ownership
+- User relationship
 - Created and updated timestamps
 
-## Project Goals
+Tasks are associated with users through a foreign key, ensuring that each user's data remains isolated.
 
-The main goal of TaskFlow was to build a complete Laravel application while practicing concepts that are important in real-world web development:
+## Development
 
-- MVC architecture
-- Database migrations
-- Eloquent relationships
-- Authentication
-- Authorization and policies
-- REST API development
-- Input validation
-- Server-side rendering
-- Frontend asset management
-- Automated testing
-- Git version control
+To run the application during development:
 
-The project is intentionally built with a relatively simple architecture so that the codebase remains understandable while still demonstrating the main concepts required for a full-stack web application.
+Terminal 1:
+
+```bash
+php artisan serve
+```
+
+Terminal 2:
+
+```bash
+npm run dev
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8000
+```
+
+For a production-style frontend build:
+
+```bash
+npm run build
+```
+
+## Why I Built This Project
+
+TaskFlow was developed as a practical demonstration of modern Laravel development.
+
+The project focuses on building functionality rather than only creating a visual interface. It demonstrates authentication, authorization, relational database design, CRUD operations, API development, validation, filtering, responsive UI, and frontend asset management.
 
 ## Author
 
 **Ramses Jimenez**
 
-GitHub: [RamsesJM](https://github.com/RamsesJM)
+GitHub:
+
+https://github.com/RamsesJM
